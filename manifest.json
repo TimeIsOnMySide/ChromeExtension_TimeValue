@@ -12,8 +12,11 @@
         {
             "matches": ["*://*/*"],
             "all_frames": true,
-            "js": ["main.js"],
+            "js": ["content_script.js"],
             "run_at": "document_end"
         }
-    ]
+    ],
+    "permissions": [
+        "storage"
+      ]
 }
