@@ -1,8 +1,11 @@
 {
     "manifest_version": 3,
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "TimeValue",
     "author": "Carly Burkhart",
+    "permissions": [
+        "storage"
+      ],
     "action": {
         "default_popup": "index.html",
         "default_icon": "icon.png"
@@ -15,8 +18,5 @@
             "js": ["content_script.js"],
             "run_at": "document_end"
         }
-    ],
-    "permissions": [
-        "storage"
-      ]
+    ]
 }

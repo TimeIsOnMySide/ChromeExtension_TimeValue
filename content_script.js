@@ -15,16 +15,25 @@ for (var i = 0; i < elements.length; i++) {
         var node = element.childNodes[j];
 
         if (node.nodeType === 3) {
-            // var hourlyRate = localStorage.getItem("hourlyRate");
 
-            // Read it using the storage API
-            var hourlyRate = chrome.storage.sync.get("hourlyRate");
+            let hourlyPay;
+
+            chrome.storage.sync.get("rate",function(obj){
+                hourlyPay = Number(obj.rate);  
+                console.log(hourlyPay);
+                      });
+
+            // 
+
+            // chrome.storage.sync.get(["rate"]).then((result) => {
+            //     console.log("Value currently is " + result.key);
+            //   });
 
             var text = node.nodeValue;
             var priceDisplayed = Number(text.match(priceRegex));
-            priceHours = Math.floor(priceDisplayed / hourlyRate);
-            var minuteRate = hourlyRate / 60;
-            priceMinutes = Math.floor((priceDisplayed % hourlyRate) / minuteRate);
+            priceHours = Math.floor(priceDisplayed / hourlyPay);
+            var minuteRate = hourlyPay / 60;
+            priceMinutes = Math.floor((priceDisplayed % hourlyPay) / minuteRate);
             var replacedText = text.replace(priceRegexAll, `${text} (${priceHours}h ${priceMinutes}m)`);
 
             if (replacedText !== text) {

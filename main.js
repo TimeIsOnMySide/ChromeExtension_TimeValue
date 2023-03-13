@@ -18,12 +18,13 @@ saveBtn.addEventListener('click', function() {
         hourlyRate = income;
     }
     
-    // localStorage.setItem("hourlyRate", hourlyRate);
+    chrome.storage.sync.set({"rate": hourlyRate},function(){
+        alert("object stored");
+ })
 
-    // Send hourlyRate to chrome storage
-    // Save it using the Chrome extension storage API.
-    chrome.storage.sync.set({'hourlyRate': hourlyRate}, function() {
-        console.log('Settings saved');
-      });
+    // chrome.storage.sync.set({ "rate": hourlyRate }).then(() => {
+    //     console.log("Value is set to " + hourlyRate);
+    // });
+
 });
 
