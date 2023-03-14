@@ -2,11 +2,26 @@
 const priceRegex = new RegExp(/[(0-9)+.?(0-9)*]+/g);
 const priceRegexAll = new RegExp(/(^\$)[(0-9)+.?(0-9)*]+/g);
 
-// Script to run & add timeCost to page
-
 var elements = document.getElementsByTagName('*');
 var priceHours;
 var priceMinutes;
+var hourlyPay;
+
+async function mainFuction() {
+    var p = new Promise(function(resolve, reject){
+        chrome.storage.sync.get("rate", function(options){
+            resolve(options.rate);
+        })
+    });
+
+    hourlyPay = await p;
+    console.log(hourlyPay);
+}
+
+
+mainFuction();
+
+console.log(hourlyPay);
 
 for (var i = 0; i < elements.length; i++) {
     var element = elements[i];
@@ -15,19 +30,6 @@ for (var i = 0; i < elements.length; i++) {
         var node = element.childNodes[j];
 
         if (node.nodeType === 3) {
-
-            let hourlyPay;
-
-            chrome.storage.sync.get("rate",function(obj){
-                hourlyPay = Number(obj.rate);  
-                console.log(hourlyPay);
-                      });
-
-            // 
-
-            // chrome.storage.sync.get(["rate"]).then((result) => {
-            //     console.log("Value currently is " + result.key);
-            //   });
 
             var text = node.nodeValue;
             var priceDisplayed = Number(text.match(priceRegex));
