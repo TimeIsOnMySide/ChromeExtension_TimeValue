@@ -1,6 +1,9 @@
 // Regex to locate prices
-const priceRegex = new RegExp(/[(0-9)+.?(0-9)*]+/g);
-const priceRegexAll = new RegExp(/(^\$)[(0-9)+.?(0-9)*]+/g);
+// const priceRegex = new RegExp(/[(0-9)+,.?(0-9)*]+/g);
+// const priceRegexAll = new RegExp(/(^\$)[(0-9)+,.?(0-9)*]+/g);
+
+const priceRegex = new RegExp(/\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})/g);
+const priceRegexAll = new RegExp(/(^\$)\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})/g);
 
 var elements = document.getElementsByTagName('*');
 var priceHours;
@@ -16,31 +19,35 @@ async function mainFuction() {
 
     hourlyPay = await p;
     console.log(hourlyPay);
+
+
+    for (var i = 0; i < elements.length; i++) {
+        var element = elements[i];
+    
+        for (var j = 0; j < element.childNodes.length; j++) {
+            var node = element.childNodes[j];
+    
+            if (node.nodeType === 3) {
+    
+                var text = node.nodeValue;
+                var priceDisplayed = Number(text.match(priceRegex));
+                priceHours = Math.floor(priceDisplayed / hourlyPay);
+                var minuteRate = hourlyPay / 60;
+                priceMinutes = Math.floor((priceDisplayed % hourlyPay) / minuteRate);
+                var replacedText = text.replace(priceRegexAll, `${text} (${priceHours}h ${priceMinutes}m)`);
+    
+                if (replacedText !== text) {
+                    element.replaceChild(document.createTextNode(replacedText), node);
+                }
+            }
+        }
+    }
+
+
 }
 
 
 mainFuction();
 
-console.log(hourlyPay);
 
-for (var i = 0; i < elements.length; i++) {
-    var element = elements[i];
 
-    for (var j = 0; j < element.childNodes.length; j++) {
-        var node = element.childNodes[j];
-
-        if (node.nodeType === 3) {
-
-            var text = node.nodeValue;
-            var priceDisplayed = Number(text.match(priceRegex));
-            priceHours = Math.floor(priceDisplayed / hourlyPay);
-            var minuteRate = hourlyPay / 60;
-            priceMinutes = Math.floor((priceDisplayed % hourlyPay) / minuteRate);
-            var replacedText = text.replace(priceRegexAll, `${text} (${priceHours}h ${priceMinutes}m)`);
-
-            if (replacedText !== text) {
-                element.replaceChild(document.createTextNode(replacedText), node);
-            }
-        }
-    }
-}
