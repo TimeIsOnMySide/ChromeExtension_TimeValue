@@ -19,12 +19,7 @@ saveBtn.addEventListener('click', function() {
     }
     
     chrome.storage.sync.set({"rate": hourlyRate},function(){
-        alert("object stored");
+        // alert("object stored");
  })
-
-    // chrome.storage.sync.set({ "rate": hourlyRate }).then(() => {
-    //     console.log("Value is set to " + hourlyRate);
-    // });
-
 });
 

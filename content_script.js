@@ -1,14 +1,12 @@
 // Regex to locate prices
-// const priceRegex = new RegExp(/[(0-9)+,.?(0-9)*]+/g);
-// const priceRegexAll = new RegExp(/(^\$)[(0-9)+,.?(0-9)*]+/g);
 
-const priceRegex = new RegExp(/\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})/g);
-const priceRegexAll = new RegExp(/(^\$)\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})/g);
+const priceRegex = new RegExp(/([\d,]+(?:\.\d+)?)/g);
+const priceRegexAll = new RegExp(/\$([\d,]+(?:\.\d+)?)/g);
 
 var elements = document.getElementsByTagName('*');
 var priceHours;
 var priceMinutes;
-var hourlyPay;
+var hourlyPay;  
 
 async function mainFuction() {
     var p = new Promise(function(resolve, reject){
@@ -18,9 +16,10 @@ async function mainFuction() {
     });
 
     hourlyPay = await p;
-    console.log(hourlyPay);
+    // console.log(hourlyPay);
 
 
+    // WORKS ON MOST OTHER PRICES EXCEPT AMAZON OR IF THERES A COMMA
     for (var i = 0; i < elements.length; i++) {
         var element = elements[i];
     
@@ -30,7 +29,10 @@ async function mainFuction() {
             if (node.nodeType === 3) {
     
                 var text = node.nodeValue;
-                var priceDisplayed = Number(text.match(priceRegex));
+                
+                var priceDisplayed = text.match(priceRegex);
+                // priceDisplayed = Number(priceDisplayed[0].replace(',',''));
+                
                 priceHours = Math.floor(priceDisplayed / hourlyPay);
                 var minuteRate = hourlyPay / 60;
                 priceMinutes = Math.floor((priceDisplayed % hourlyPay) / minuteRate);
@@ -43,6 +45,16 @@ async function mainFuction() {
         }
     }
 
+
+    //  WORKS ON AMAZON PRICES (Need to add logic for a comma in formatting final number)
+    document.querySelectorAll('.a-price').forEach(function(element){
+        var priceDisplayed = element.innerText.replace('$','');
+        priceDisplayed = parseFloat(priceDisplayed.replace(',',''));
+        priceHours = Math.floor(priceDisplayed / hourlyPay);
+        var minuteRate = hourlyPay / 60;
+        priceMinutes = Math.floor((priceDisplayed % hourlyPay) / minuteRate);
+        element.innerText = `$${priceDisplayed} (${priceHours}h ${priceMinutes}m)`;
+    });
 
 }
 
